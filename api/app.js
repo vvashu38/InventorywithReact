@@ -13,6 +13,7 @@ app.use(bodyParser.json());
 
 app.get("/", (request, response, next) => {
   response.json({ message: "Hey! This is your server response!" });
+  next();
 });
 
 module.exports = app;
