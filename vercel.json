@@ -1,13 +1,1 @@
-{
-    "version": 2,
-    "rewrites": [
-      {
-        "source": "/(.*)",
-        "destination": "/api/$1"
-      }
-    ],
-    "dev": {
-      "port": 3001
-    }
-  }
-  
+{ "version": 2, "rewrites": [{ "source": "/(.*)", "destination": "/api" }] }
