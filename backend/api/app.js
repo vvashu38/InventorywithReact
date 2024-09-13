@@ -34,7 +34,7 @@ const dbConnect = require("../db/dbConnect");
 dbConnect();
 
 // Register endpoint
-app.post("/register", (request, response) => {
+app.post("/api/register", (request, response) => {
   bcrypt
     .hash(request.body.password, 10)
     .then((hashedPassword) => {
@@ -67,7 +67,7 @@ app.post("/register", (request, response) => {
 });
 
 // Login endpoint
-app.post("/login", (request, response) => {
+app.post("/api/login", (request, response) => {
   User.findOne({ email: request.body.email })
     .then((user) => {
       if (!user) {
@@ -116,12 +116,12 @@ app.post("/login", (request, response) => {
 });
 
 // Free endpoint
-app.get("/free-endpoint", (request, response) => {
+app.get("/api/free-endpoint", (request, response) => {
   response.json({ message: "You are free to access me anytime" });
 });
 
 // Authentication endpoint
-app.get("/auth-endpoint", auth, (request, response) => {
+app.get("/api/auth-endpoint", auth, (request, response) => {
   response.json({ message: "You are authorized to access me" });
 });
 
