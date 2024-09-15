@@ -9,8 +9,9 @@ const Register = () => {
     e.preventDefault();
 
     const formData = { email, password };
-    const baseURL = process.env.BASE_URL; // Access baseURL from .env
+    const baseURL = process.env.REACT_APP_BASE_URL;
 
+    console.log(baseURL);
     try {
       const response = await fetch(`${baseURL}/register`, {
         method: 'POST',
