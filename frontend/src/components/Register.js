@@ -9,9 +9,10 @@ const Register = () => {
     e.preventDefault();
 
     const formData = { email, password };
+    const baseURL = process.env.BASE_URL; // Access baseURL from .env
 
     try {
-      const response = await fetch('http://localhost:3000/api/register', {
+      const response = await fetch(`${baseURL}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
