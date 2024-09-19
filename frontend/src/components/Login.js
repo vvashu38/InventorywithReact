@@ -1,9 +1,14 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import Cookies from "universal-cookie";
+import { useNavigate } from 'react-router-dom'; // Make sure this is imported
+
+const cookies = new Cookies();
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -11,7 +16,6 @@ const Login = () => {
     const formData = { email, password };
     const baseURL = process.env.REACT_APP_BASE_URL;
 
-    console.log(baseURL);
     try {
       const response = await fetch(`${baseURL}/login`, {
         method: 'POST',
@@ -24,11 +28,15 @@ const Login = () => {
       const result = await response.json();
       if (response.ok) {
         setMessage('Login successful!');
+        cookies.set("TOKEN", result.token, {
+          path: "/",
+        });
+        navigate("/auth"); // Use navigate instead of window.location
       } else {
         setMessage(result.message || 'Login failed');
       }
     } catch (error) {
-      setMessage('Error during login');
+      setMessage('Error during login: ' + error.message);
       console.error(error);
     }
   };
