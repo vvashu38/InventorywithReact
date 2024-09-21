@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Curb CORS Errors by adding a header here
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", process.env.STORE);
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
@@ -89,8 +89,9 @@ app.post("/api/login", (request, response) => {
             {
               userId: user._id,
               userEmail: user.email,
+              role: user.role,
             },
-            process.env.JWT_SECRET || "RANDOM-TOKEN", // Use a more secure secret
+            process.env.JWT_SECRET , // Use a more secure secret
             { expiresIn: "24h" }
           );
 
@@ -122,7 +123,76 @@ app.get("/api/free-endpoint", (request, response) => {
 
 // Authentication endpoint
 app.get("/api/auth-endpoint", auth, (request, response) => {
-  response.json({ message: "You are authorized to access me" });
+  // response.json({ message: "You are authorized to access me" });
+  const userRole = request.user.role;
+  response.json({ message: "You are authorized to access me" ,
+    role: userRole });
+});
+
+app.put("/api/role", auth, async (request, response) => {
+  const userRole = request.user.role;
+
+  // Check if the authenticated user is an admin
+  if (userRole !== "admin") {
+    return response.status(403).json({ message: "You are not authorized to change roles." });
+  }
+
+  const { email, role } = request.body; // Get the email and new role from the request body
+
+  // Validate input
+  if (!email || !role) {
+    return response.status(400).json({ message: "Email and new role are required." });
+  }
+
+  // Load valid roles from the environment variable
+  const validRoles = process.env.VALID_ROLES.split(',');
+
+  // Check if the newRole is one of the allowed roles
+  if (!validRoles.includes(role)) {
+    return response.status(400).json({ message: `Role must be one of the following: ${validRoles.join(', ')}` });
+  }
+
+  try {
+    // Update the user's role in the database
+    const updatedUser = await User.findOneAndUpdate(
+      { email }, // Find user by email
+      { role: role }, // Update role
+      { new: true } // Return the updated user
+    );
+
+    if (!updatedUser) {
+      return response.status(404).json({ message: "User not found." });
+    }
+
+    response.json({ 
+      message: "User role updated successfully.", 
+      user: updatedUser 
+    });
+  } catch (error) {
+    response.status(500).json({ message: "Error updating user role.", error });
+  }
+});
+
+// Get All Users Endpoint
+app.get("/api/users", auth, async (request, response) => {
+  const userRole = request.user.role;
+
+  // Check if the authenticated user is an admin
+  if (userRole !== "admin") {
+    return response.status(403).json({ message: "You are not authorized to view users." });
+  }
+
+  try {
+    // Retrieve all users from the database
+    const users = await User.find().select("-password"); // Exclude password for security
+
+    response.json({
+      message: "Users retrieved successfully.",
+      users,
+    });
+  } catch (error) {
+    response.status(500).json({ message: "Error retrieving users.", error });
+  }
 });
 
 module.exports = app;
