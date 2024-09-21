@@ -3,4 +3,6 @@
 3. PUSH
 4. PUSH
 5. PUSH
-6. Added taiwind
+6. Added tailwind
+7. Added tailwind
+8. PUSH
