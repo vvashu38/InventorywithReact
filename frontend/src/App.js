@@ -12,7 +12,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <nav className="bg-gray-800 p-4">
+        <nav className="bg-white-800 p-4">
           <ul className="flex space-x-4">
             <li>
               <Link to="/" className="text-black hover:text-blue-400">Home</Link>
