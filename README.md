@@ -7,4 +7,4 @@
 7. Added tailwind
 8. PUSH
 9. Push
-10. 10. PUSH
+10. PUSH
