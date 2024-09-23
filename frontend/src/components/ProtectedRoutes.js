@@ -1,25 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Navigate } from "react-router-dom";
-import Cookies from "universal-cookie";
-import { jwtDecode } from "jwt-decode";
-
-const cookies = new Cookies();
+import { AuthContext } from './AuthContext';
 
 export default function ProtectedRoutes({ children, requiredRole }) {
-  const token = cookies.get("TOKEN");
-  if (!token) {
-    return <Navigate to="/" replace />;
+  const { isLoggedIn,userRole  } = useContext(AuthContext); 
+  if (!isLoggedIn) {
+    return <Navigate to="/login" replace />;
   }
   try {
-    const decodedToken = jwtDecode(token);
-    const userRole = decodedToken.role;
-    
     if (requiredRole && userRole !== requiredRole) {
-      return <Navigate to="/" replace />;
+      return <Navigate to="/login" replace />;
     }
 
     return children;
   } catch (error) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
 }

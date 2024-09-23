@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Cookies from 'universal-cookie';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from './AuthContext';
 
 const cookies = new Cookies();
 
 const Login = () => {
+  const { isLoggedIn, login } = useContext(AuthContext); 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,7 +30,6 @@ const Login = () => {
         const result = await response.json();
         if (response.ok) {
           setMessage(result.message);
-          setIsLoggedIn(true);
         } else {
           setMessage(result.message || 'Failed to fetch message');
         }
@@ -65,8 +65,8 @@ const Login = () => {
       const result = await response.json();
       if (response.ok) {
         setMessage('Login successful!');
-        cookies.set("TOKEN", result.token, { path: "/" });
-        navigate("/auth");
+        login(result.token);
+        navigate("/");
       } else {
         setMessage(result.message || 'Login failed');
       }
