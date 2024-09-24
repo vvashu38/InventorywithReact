@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import '../css/output.css'; // Adjust the path as needed
 import { AuthContext } from './AuthContext';
 
 const Home = () => {
