@@ -9,4 +9,7 @@
 9. Push
 10. PUSH
 11. PUSH
-    12. PUSH
+12. PUSH
+13. Deploy
+
+    
