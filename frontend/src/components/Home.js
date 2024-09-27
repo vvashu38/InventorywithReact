@@ -6,7 +6,7 @@ const Home = () => {
   const { isLoggedIn } = useContext(AuthContext); 
   return (
     <div className="p-4">
-      <h1 className="text-3xl font-bold underline">Welcome to the Store!</h1>
+      <h1 className="text-3xl font-bold underline text-center">Welcome to the Store!</h1>
       { !isLoggedIn && (
         <>
         <h1 className="text-blue-500 mt-4">Login to Our App!</h1>

@@ -33,6 +33,7 @@ const AuthProvider = ({ children }) => {
 
   const logout = () => {
     cookies.remove('TOKEN', { path: '/' });
+    window.location.reload(true);
     setIsLoggedIn(false);
     setUserRole('');
   };
