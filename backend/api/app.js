@@ -41,8 +41,11 @@ app.post("/api/register", (request, response) => {
       const user = new User({
         email: request.body.email,
         password: hashedPassword,
+        name: {
+          first: request.body.name.first || '', // Assign empty string if not provided
+          last: request.body.name.last || '',   // Assign empty string if not provided
+        },
       });
-
       user
         .save()
         .then((result) => {
@@ -223,6 +226,22 @@ app.get("/api/users", auth, async (request, response) => {
     response.json({
       message: "Users retrieved successfully.",
       users,
+    });
+  } catch (error) {
+    response.status(500).json({ message: "Error retrieving users.", error });
+  }
+});
+
+app.get("/api/user", auth, async (request, response) => {
+  const email = request.user.email;
+
+  try {
+    // Retrieve all users from the database
+    const user = await User.findOne({email}).select("-password"); // Exclude password for security
+
+    response.json({
+      message: "Users retrieved successfully.",
+      user,
     });
   } catch (error) {
     response.status(500).json({ message: "Error retrieving users.", error });
