@@ -6,6 +6,7 @@ const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState('');
+  const [userEmail, setUserEmail] = useState('');
   // Wrap cookies initialization in useMemo to prevent recreating on each render
   const cookies = useMemo(() => new Cookies(), []);
 
@@ -15,6 +16,7 @@ const AuthProvider = ({ children }) => {
       try {
         const decodedToken = jwtDecode(token);
         setUserRole(decodedToken.role);
+        setUserEmail(decodedToken.userEmail);
         setIsLoggedIn(true);
       } catch (error) {
         console.error('Error decoding token', error);
@@ -39,7 +41,7 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, userRole, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, userRole, userEmail, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -52,10 +52,6 @@ router.post("/group", auth, async (request, response) => {
 
         // Resolve all promises to get member IDs
         const usersIds = await Promise.all(userPromises);
-        console.log(creator);
-        console.log("name" , name);
-
-        
         const newGroup = new Group({name, createdby: creator._id, members: usersIds});
         newGroup.save();
 

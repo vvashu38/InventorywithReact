@@ -7,7 +7,8 @@ import Changerole from './components/Changerole';
 import DeleteUser from './components/Deleteuser';
 import Profile from './components/Profile';
 import { AuthContext } from './components/AuthContext';
-import Split from './components/Split';
+import CreateGroup from './components/CreateGroup';
+import Group from './components/Group';
 
 function App() {
   const { isLoggedIn, logout, userRole } = useContext(AuthContext); // Accessing the login state
@@ -76,7 +77,9 @@ function App() {
           <Route path="/profile" element={<Profile />}/>
           <Route path="/changerole" element={<Changerole />}/>
           <Route path="/deleteuser" element={<DeleteUser />}/>
-          <Route path="/split" element={<Split />}/>
+          <Route path="/creategroup" element={<CreateGroup />}/>
+          <Route path="/group" element={<Group />}/>
+
         </Routes>
       
     </Router>

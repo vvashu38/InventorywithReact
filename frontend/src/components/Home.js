@@ -21,7 +21,7 @@ const Home = () => {
       }
       { isLoggedIn && (
         <>
-        <Link to="/split">
+        <Link to="/creategroup">
         <div className="flex justify-center">
           <button className="mt-2 px-4 py-2 bg-sky-500 text-white rounded">Create your Spliteee</button>
         </div>
