@@ -3,8 +3,8 @@ const bcrypt = require("bcrypt");
 const User = require("../../db/models/userModel");
 const router = express();
 
-router.post("/register", async (request, response) => {
-    // const email = request.body.email;
+router.post("/register", (request, response) => {
+    const email = request.body.email;
     // const userIsPending = await User.findOne(
     //   { email }
     // );
