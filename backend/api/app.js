@@ -5,9 +5,10 @@ const bodyParser = require('body-parser');
 // middleware routes
 const login = require("./middleware/login");
 const authEndpoint = require("./middleware/auth-endpoint");
+const register = require("./middleware/register");
+const testapi = require("./middleware/testapi");
 
 // api routes
-const register = require("./middleware/register");
 const changerole = require("./routes/changerole");
 const deleteuser = require("./routes/deleteuser");
 const getusers = require("./routes/getusers");
@@ -39,6 +40,9 @@ app.get("/", (response) => {
 // Require database connection and execute it
 const dbConnect = require("../db/dbConnect");
 dbConnect();
+
+//test
+app.use("/api", testapi);
 
 app.use("/api", register);
 app.use("/api", login);
