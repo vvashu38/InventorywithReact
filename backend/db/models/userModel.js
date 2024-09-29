@@ -25,10 +25,12 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    groups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'group' }]
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
+    timestamps: true,
   }
 );
 
@@ -43,4 +45,4 @@ UserSchema.virtual("fullName")
   });
 
 // Export the model, preventing overwrite issues
-module.exports = mongoose.models.Users || mongoose.model("Users", UserSchema);
+module.exports = mongoose.models.users || mongoose.model("users", UserSchema);

@@ -1,5 +1,4 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
 const User = require("../../db/models/userModel");
 const router = express();
 const auth = require("../middleware/auth");

@@ -1,5 +1,4 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
 const User = require("../../db/models/userModel");
 const router = express();
 const auth = require("../middleware/auth");
@@ -34,7 +33,7 @@ router.delete("/deleteuser", auth, async (request, response) => {
         user: deleteUser 
       });
     } catch (error) {
-      response.status(500).json({ message: "Error deleting user.", error });
+      response.status(500).json({ message: "Error deleting user.", error: error.message });
     }
   });
 
