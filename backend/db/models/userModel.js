@@ -21,6 +21,10 @@ const UserSchema = new mongoose.Schema(
       default: "user",
       required: true,
     },
+    is_registered: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: { virtuals: true },

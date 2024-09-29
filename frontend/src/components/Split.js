@@ -1,8 +1,6 @@
-import React, { useContext } from 'react';
-import { AuthContext } from './AuthContext';
+import React from 'react';
 
 const Split = () => {
-  const { isLoggedIn } = useContext(AuthContext); 
   return (
     <>
     <h1>Hello</h1></>
