@@ -9,6 +9,7 @@ import Profile from './components/Profile';
 import { AuthContext } from './components/AuthContext';
 import CreateGroup from './components/CreateGroup';
 import Group from './components/Group';
+import Groups from './components/Groups';
 
 function App() {
   const { isLoggedIn, logout, userRole } = useContext(AuthContext); // Accessing the login state
@@ -23,7 +24,7 @@ function App() {
               </div>
               <ul className="hidden items-center md:flex md:space-x-8 md:mt-0">
                 <li>
-                  <Link to="/" className="text-white margpy-2 px-4 rounded hover:bg-blue-700 transition duration-300 ease-in-out" aria-current="page">Home</Link>
+                  <Link to="/" className="text-gray-300 hover:bg-gray-700 hover:text-white py-2 px-4 rounded transition duration-300 ease-in-out" aria-current="page">Home</Link>
                 </li>
                 {!isLoggedIn && (
                   <>
@@ -41,6 +42,9 @@ function App() {
                 <li>
                 <Link to="/profile" className="text-gray-300 hover:bg-gray-700 hover:text-white py-2 px-4 rounded transition duration-300 ease-in-out">Profile</Link>
                 </li>
+                <li>
+                <Link to="/groups" className="text-gray-300 hover:bg-gray-700 hover:text-white py-2 px-4 rounded transition duration-300 ease-in-out">Spliteees</Link>
+                </li>
                 </>
                 }
                 {isLoggedIn && userRole === "admin" && (
@@ -51,7 +55,6 @@ function App() {
                     <li>
                       <Link to="/deleteuser" className="text-gray-300 hover:bg-gray-700 hover:text-white py-2 px-4 rounded transition duration-300 ease-in-out">Delete User</Link>
                     </li>
-                  
                   </>
                 )}
                 {isLoggedIn && (
@@ -79,6 +82,7 @@ function App() {
           <Route path="/deleteuser" element={<DeleteUser />}/>
           <Route path="/creategroup" element={<CreateGroup />}/>
           <Route path="/group" element={<Group />}/>
+          <Route path="/groups" element={<Groups />}/>
 
         </Routes>
       

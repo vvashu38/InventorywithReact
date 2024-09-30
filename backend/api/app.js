@@ -14,6 +14,8 @@ const deleteuser = require("./routes/deleteuser");
 const getusers = require("./routes/getusers");
 const userprofile = require("./routes/userprofile");
 const createGroup = require("./routes/creategroup");
+const getGroup = require("./routes/getgroup");
+const getGroups = require("./routes/getgroups");
 
 // body parser configuration
 app.use(bodyParser.json());
@@ -53,5 +55,7 @@ app.use("/api", getusers);
 app.use("/api", userprofile);
 app.use("/api", authEndpoint);
 app.use("/api", createGroup);
+app.use("/api", getGroup);
+app.use("/api", getGroups);
 
 module.exports = app;

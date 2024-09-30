@@ -65,7 +65,7 @@ const Group = () => {
       .then((response) => response.json())
       .then((data) => {
         setMessage(data.message); // Show success or error message
-        navigate('/group', { state: { group: data.group , emails: emailsToUpdate} });
+        navigate('/group', { state: { group: data.group } });
         // Clear inputs after submission
         setNewEmail(""); 
         setNewEmails([]); 

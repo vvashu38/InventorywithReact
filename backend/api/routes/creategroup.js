@@ -19,9 +19,7 @@ router.post("/group", auth, async (request, response) => {
     const email = request.user.email;
     const name = request.body.groupName;
     const emails = request.body.emails || [];
-    if (!emails.includes(email)) {
-        emails.push(email);
-    }
+    emails.push(email);
     if (!name || !emails.length) {
         return response.status(400).json({ message: 'Invalid payload. Group name and emails are required.' });
     }
