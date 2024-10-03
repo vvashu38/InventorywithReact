@@ -15,3 +15,4 @@
 15. Deploy
 16. Deploy
 17. Deploy
+18. Push
