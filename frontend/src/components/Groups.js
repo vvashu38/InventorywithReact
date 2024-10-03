@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from "universal-cookie";
-import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const cookies = new Cookies();
+
 const Groups = () => {
-    const [createdby, setCreatedby] = useState('');
-    const [members, setMembers] = useState('');
-    const [groupName, setGroupName] = useState('');
+    const navigate = useNavigate();
+    const [group, setGroup] = useState([]);
     const [loading, setLoading] = useState(true); // Loading state
     const [error, setError] = useState(null); // Error state
+    const [searchTerm, setSearchTerm] = useState(''); // Search term state
   
     useEffect(() => {
       const token = cookies.get("TOKEN");
@@ -31,12 +32,7 @@ const Groups = () => {
   
           if (data.group) {
             console.log(data.group);
-            const membersList = data.group.members || [];
-            const created = data.group.createdby.email || 'N/A'; // Default to 'N/A' if no email
-            const emails = membersList.map(member => member.email).join(', ');
-            setGroupName(data.group.name);
-            setMembers(emails);
-            setCreatedby(created);
+            setGroup(data.group);
           } else {
             setError('Group data is not available.');
           }
@@ -49,6 +45,15 @@ const Groups = () => {
   
       fetchGroupData();
     }, []);
+
+    const handleEdit = (g) => {
+        navigate('/group', { state: { group: g } });
+    }
+
+    // Filter groups based on the search term
+    const filteredGroups = group.filter((g) =>
+        g.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
       
     return (
     <div class="max-w-2xl mx-auto">
@@ -64,55 +69,50 @@ const Groups = () => {
                                 clip-rule="evenodd"></path>
                         </svg>
                     </div>
-                    <input type="text" id="table-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items"/>
-            </div>
+                    <input 
+                      type="text" 
+                      id="table-search" 
+                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                      placeholder="Search for group name"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)} // Update search term
+                    />
                 </div>
-                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" class="px-6 py-3">
-                                Product name
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Color
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Category
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Price
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                <span class="sr-only">Edit</span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-
-                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                Apple MacBook Pro 17"
-                            </th>
-                            <td class="px-6 py-4">
-                                Sliver
-                            </td>
-                            <td class="px-6 py-4">
-                                Laptop
-                            </td>
-                            <td class="px-6 py-4">
-                                $2999
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <button className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
-
             
-            <script src="https://unpkg.com/flowbite@1.3.4/dist/flowbite.js"></script>
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            Group Name
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Created By
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            <span class="sr-only">Edit</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    { filteredGroups.map((g) => (
+                        <tr key={g._id} class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                            {g.name}
+                        </th>
+                        <td class="px-6 py-4">
+                            {g.createdby.email}
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <button onClick={() => handleEdit(g)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Open Group</button>
+                        </td>
+                        </tr>
+                    ))    
+                    }
+                </tbody>
+            </table>
         </div>
+    </div>
     );
 }
 
