@@ -15,7 +15,7 @@ const Group = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
-  const [due, setTotalDue] = useState([]);
+  const [due, setTotalDue] = useState({ owedToMe: {}, iOwe: {} }); // Dues
   const [user, setUser] = useState(null); // Initialize with null for clarity
 
   useEffect(() => {
@@ -57,7 +57,6 @@ const Group = () => {
         }
 
         const data = await response.json();
-        console.log(group.createdby.email);
         if (data.group) {
           const membersList = data.group.members || [];
           const created = data.group.createdby.email || 'N/A'; // Default to 'N/A' if no email
@@ -83,7 +82,7 @@ const Group = () => {
     const fetchTotalSpend = async () => {
       try {
         const totalSpend = transactions.reduce((total, transaction) => {
-          if (transaction.spender.email === user.email) {
+          if (transaction.spender.email === user?.email) {
             return total + transaction.amount;
           }
           return total;
@@ -96,8 +95,44 @@ const Group = () => {
       }
     };
   
-    fetchTotalSpend();
-  }, [transactions]); // Ensure useEffect syntax and dependencies  
+    if (user) {
+      fetchTotalSpend();
+    }
+  }, [transactions, user]); // Ensure useEffect syntax and dependencies  
+
+  // Calculate dues based on transactions
+  useEffect(() => {
+    if (!user) return;
+
+    const calculateDues = () => {
+      const myEmail = user.email;
+      const dues = {
+        owedToMe: {},  // Who owes me and how much
+        iOwe: {}       // Who I owe and how much
+      };
+
+      transactions.forEach((transaction) => {
+        const spenderEmail = transaction.spender.email;
+        
+        transaction.splits.forEach((split) => {
+          const paidForEmail = split.paid_for.email;
+          const splitAmount = split.amount;
+
+          if (spenderEmail === myEmail && paidForEmail !== myEmail) {
+            // If I paid for someone else
+            dues.owedToMe[paidForEmail] = (dues.owedToMe[paidForEmail] || 0) + splitAmount;
+          } else if (paidForEmail === myEmail && spenderEmail !== myEmail) {
+            // If someone else paid for me
+            dues.iOwe[spenderEmail] = (dues.iOwe[spenderEmail] || 0) + splitAmount;
+          }
+        });
+      });
+
+      setTotalDue(dues);
+    };
+
+    calculateDues();
+  }, [transactions, user]);
 
   return (
     <div className="min-h-screen flex justify-center bg-gray-100 pt-8">
@@ -119,9 +154,33 @@ const Group = () => {
               <span className="font-semibold">Members:</span> {members || 'No members found.'}
             </p>
             <p className="text-lg font-medium text-gray-800">
-              <span className="font-semibold">Total Spent by you:</span> {spent}
+              <span className="font-semibold">Total Spent by you:</span> ₹{spent}
             </p>
-            
+
+            {/* Dues List */}
+            <h2 className="text-xl font-bold mt-6 mb-4 text-blue-600">Dues</h2>
+
+            {Object.keys(due.owedToMe).length > 0 && (
+              <>
+                <p className="font-semibold">People who owe me:</p>
+                <ul className="ml-4 list-disc">
+                  {Object.entries(due.owedToMe).map(([email, amount]) => (
+                    <li key={email}>{email}: ₹{amount}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {Object.keys(due.iOwe).length > 0 && (
+              <>
+                <p className="font-semibold mt-4">People I owe:</p>
+                <ul className="ml-4 list-disc">
+                  {Object.entries(due.iOwe).map(([email, amount]) => (
+                    <li key={email}>{email}: ₹{amount}</li>
+                  ))}
+                </ul>
+              </>
+            )}
 
             {/* Transactions List */}
             <h2 className="text-xl font-bold mt-6 mb-4 text-blue-600">Transactions</h2>
@@ -153,7 +212,5 @@ const Group = () => {
     </div>
   );
 };
-
-
 
 export default Group;
