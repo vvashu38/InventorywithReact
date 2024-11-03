@@ -9,6 +9,7 @@ const Group = () => {
   const group = location.state?.group; // Access the passed group data
   const groupID = group._id;
   const [createdby, setCreatedby] = useState('');
+  const [spent, setSpent] = useState(0);
   const [members, setMembers] = useState('');
   const [groupName, setGroupName] = useState('');
   const [transactions, setTransactions] = useState([]);
@@ -33,7 +34,6 @@ const Group = () => {
         }
 
         const data = await response.json();
-
         if (data.group) {
           const membersList = data.group.members || [];
           const created = data.group.createdby.email || 'N/A'; // Default to 'N/A' if no email
@@ -42,7 +42,13 @@ const Group = () => {
           setMembers(emails);
           setCreatedby(created);
           setTransactions(data.group.transactions || []);
-          console.log(transactions);
+          const totalSpend = transactions.reduce((total,transaction) => {
+            if(transaction.spender.email == group.createdby.email){
+              return total += transaction.amount;
+            }
+            return total;
+          },0)
+          setSpent(totalSpend);
         } else {
           setError('Group data is not available.');
         }
@@ -72,8 +78,11 @@ const Group = () => {
             <p className="text-lg font-medium text-gray-800 mb-4">
               <span className="font-semibold">Created By:</span> {createdby}
             </p>
-            <p className="text-lg font-medium text-gray-800">
+            <p className="text-lg font-medium text-gray-800 mb-4">
               <span className="font-semibold">Members:</span> {members || 'No members found.'}
+            </p>
+            <p className="text-lg font-medium text-gray-800">
+              <span className="font-semibold">Total Spent by you:</span> {spent}
             </p>
 
             {/* Transactions List */}
