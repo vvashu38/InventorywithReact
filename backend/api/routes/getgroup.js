@@ -9,7 +9,13 @@ router.get("/group/:id", auth, async (request, response) => {
     const _id = request.params.id;
     const userId = ObjectId.createFromHexString(request.user.id);
     try {
-        const group = await Group.findOne({ _id }).populate('members','email name').populate('createdby','email name');
+        const group = await Group.findOne({ _id }).populate('members','email name').populate('createdby','email name').populate({
+            path: 'transactions',
+            populate: [
+              { path: 'spender', select: 'email name' },      // Populate spender details
+              { path: 'splits.paid_for', select: 'email name' } // Populate paid_for details in splits
+            ]
+          });
         if (!group) {
             return response.status(404).json({ message: "Group not found" });
         }

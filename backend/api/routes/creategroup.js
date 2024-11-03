@@ -18,8 +18,11 @@ function generateRandomPassword(length = 12) {
 router.post("/group", auth, async (request, response) => {
     const email = request.user.email;
     const name = request.body.groupName;
-    const emails = request.body.emails || [];
-    emails.push(email);
+    const emailsToAdd = request.body.emails || [];
+    emailsToAdd.push(email);
+
+    const emails = [...new Set(emailsToAdd)];
+
     if (!name || !emails.length) {
         return response.status(400).json({ message: 'Invalid payload. Group name and emails are required.' });
     }

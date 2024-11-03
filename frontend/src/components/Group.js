@@ -11,6 +11,7 @@ const Group = () => {
   const [createdby, setCreatedby] = useState('');
   const [members, setMembers] = useState('');
   const [groupName, setGroupName] = useState('');
+  const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
 
@@ -40,6 +41,8 @@ const Group = () => {
           setGroupName(data.group.name);
           setMembers(emails);
           setCreatedby(created);
+          setTransactions(data.group.transactions || []);
+          console.log(transactions);
         } else {
           setError('Group data is not available.');
         }
@@ -55,7 +58,7 @@ const Group = () => {
 
   return (
     <div className="min-h-screen flex justify-center bg-gray-100 pt-8">
-      <div className="bg-white p-6 rounded-lg shadow-md max-w-lg w-full max-h-[35vh] overflow-auto"> {/* Adjusted styles */}
+      <div className="bg-white p-6 rounded-lg shadow-md max-w-7xl w-full overflow-auto">
         <h1 className="text-2xl font-bold mb-4 text-center text-blue-600">Group Details</h1>
         {loading ? (
           <p className="text-center text-gray-600">Loading...</p> // Loading message
@@ -72,14 +75,38 @@ const Group = () => {
             <p className="text-lg font-medium text-gray-800">
               <span className="font-semibold">Members:</span> {members || 'No members found.'}
             </p>
+
+            {/* Transactions List */}
+            <h2 className="text-xl font-bold mt-6 mb-4 text-blue-600">Transactions</h2>
+            {transactions.length > 0 ? (
+              transactions.map((transaction) => (
+                <div key={transaction._id} className="mb-4 p-4 border rounded-lg bg-gray-50">
+                  <p className="font-semibold">Description: {transaction.description}</p>
+                  <p>Amount: ₹{transaction.amount}</p>
+                  <p>Date: {new Date(transaction.date).toLocaleDateString()}</p>
+                  <p>Spender: {transaction.spender.fullName || transaction.spender.email}</p>
+                  <p>Splits:</p>
+                  <ul className="ml-4 list-disc">
+                    {transaction.splits.map((split) => (
+                      <li key={split._id}>
+                        {split.paid_for.fullName || split.paid_for.email}: ₹{split.amount}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))
+            ) : (
+              <p className="text-center text-gray-600">No transactions found.</p>
+            )}
           </div>
         ) : (
           <p className="text-center text-red-600">No group data available.</p>
         )}
       </div>
-  </div>
-
+    </div>
   );
 };
+
+
 
 export default Group;

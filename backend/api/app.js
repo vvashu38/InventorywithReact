@@ -16,6 +16,8 @@ const userprofile = require("./routes/userprofile");
 const createGroup = require("./routes/creategroup");
 const getGroup = require("./routes/getgroup");
 const getGroups = require("./routes/getgroups");
+const putUserGroup = require("./routes/putusergroup");
+const addTransaction = require("./routes/addtransaction");
 
 // body parser configuration
 app.use(bodyParser.json());
@@ -42,6 +44,7 @@ app.get("/", (response) => {
 
 // Require database connection and execute it
 const dbConnect = require("../db/dbConnect");
+const { populate } = require("../db/models/userModel");
 dbConnect();
 
 //test
@@ -58,5 +61,7 @@ app.use("/api", authEndpoint);
 app.use("/api", createGroup);
 app.use("/api", getGroup);
 app.use("/api", getGroups);
+app.use("/api", putUserGroup);
+app.use("/api", addTransaction);
 
 module.exports = app;

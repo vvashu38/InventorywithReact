@@ -5,6 +5,7 @@ const cookies = new Cookies();
 
 const Group = () => {
   const [groupName, setGroupName] = useState("");
+  const [isDisabled, setIsDisabled] = useState(false);
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]); // State to store filtered users
   const [selectedEmails, setSelectedEmails] = useState([]); // State to store selected emails
@@ -46,6 +47,7 @@ const Group = () => {
   // Function to handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsDisabled(true);
     const token = cookies.get("TOKEN");
     const baseURL = process.env.REACT_APP_BASE_URL;
     
@@ -204,6 +206,7 @@ const Group = () => {
 
         <button
           type="submit"
+          disabled = {isDisabled}
           className="w-full bg-indigo-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
         >
           Create group
