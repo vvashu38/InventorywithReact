@@ -34,6 +34,7 @@ const Group = () => {
         }
 
         const data = await response.json();
+        console.log(group.createdby.email);
         if (data.group) {
           const membersList = data.group.members || [];
           const created = data.group.createdby.email || 'N/A'; // Default to 'N/A' if no email
@@ -42,13 +43,6 @@ const Group = () => {
           setMembers(emails);
           setCreatedby(created);
           setTransactions(data.group.transactions || []);
-          const totalSpend = transactions.reduce((total,transaction) => {
-            if(transaction.spender.email == group.createdby.email){
-              return total += transaction.amount;
-            }
-            return total;
-          },0)
-          setSpent(totalSpend);
         } else {
           setError('Group data is not available.');
         }
@@ -61,6 +55,26 @@ const Group = () => {
 
     fetchGroupData();
   }, [groupID]);
+
+  useEffect(() => {
+    const fetchTotalSpend = async () => {
+      try {
+        const totalSpend = transactions.reduce((total, transaction) => {
+          if (transaction.spender.email === group.createdby.email) {
+            return total + transaction.amount;
+          }
+          return total;
+        }, 0);
+        setSpent(totalSpend);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false); // Set loading to false after fetching
+      }
+    };
+  
+    fetchTotalSpend();
+  }, [transactions]); // Ensure useEffect syntax and dependencies  
 
   return (
     <div className="min-h-screen flex justify-center bg-gray-100 pt-8">
