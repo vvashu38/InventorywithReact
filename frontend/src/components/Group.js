@@ -15,6 +15,29 @@ const Group = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
+  const [due, setTotalDue] = useState([]);
+  const [user, setUser] = useState(null); // Initialize with null for clarity
+
+  useEffect(() => {
+    const token = cookies.get("TOKEN");
+    const baseURL = process.env.REACT_APP_BASE_URL;
+
+    fetch(`${baseURL}/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Send JWT token in Authorization header
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.user) {
+          setUser(data.user); // Set user data if available
+          console.log("Fetched User Data:", data.user); // Log the user data
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching user profile:", error);
+      });
+  }, []);
 
   useEffect(() => {
     const token = cookies.get("TOKEN");
@@ -60,7 +83,7 @@ const Group = () => {
     const fetchTotalSpend = async () => {
       try {
         const totalSpend = transactions.reduce((total, transaction) => {
-          if (transaction.spender.email === group.createdby.email) {
+          if (transaction.spender.email === user.email) {
             return total + transaction.amount;
           }
           return total;
@@ -98,6 +121,7 @@ const Group = () => {
             <p className="text-lg font-medium text-gray-800">
               <span className="font-semibold">Total Spent by you:</span> {spent}
             </p>
+            
 
             {/* Transactions List */}
             <h2 className="text-xl font-bold mt-6 mb-4 text-blue-600">Transactions</h2>
