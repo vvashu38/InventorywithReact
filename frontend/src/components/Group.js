@@ -17,6 +17,10 @@ const Group = () => {
   const [error, setError] = useState(null); // Error state
   const [due, setTotalDue] = useState({ owedToMe: {}, iOwe: {} }); // Dues
   const [user, setUser] = useState(null); // Initialize with null for clarity
+  const [memberEmailArray, setMemberEmailArray] = useState([]);
+  const [transactionDescription, setTransactionDescription] = useState('');
+  const [transactionAmount, setTransactionAmount] = useState(0);
+  const [splits, setSplits] = useState([]); // Manage splits as an array of objects
 
   useEffect(() => {
     const token = cookies.get("TOKEN");
@@ -60,6 +64,8 @@ const Group = () => {
         if (data.group) {
           const membersList = data.group.members || [];
           const created = data.group.createdby.email || 'N/A'; // Default to 'N/A' if no email
+          const emailsArray = membersList.map(member => member.email);
+          setMemberEmailArray(emailsArray);
           const emails = membersList.map(member => member.email).join(', ');
           setGroupName(data.group.name);
           setMembers(emails);
